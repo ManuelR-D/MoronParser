@@ -1,0 +1,268 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="theme-color" content="#0072b8">
+    <meta name="msapplication-navbutton-color" content="#0072b8">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0072b8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>BOLETIN OFICIAL REPUBLICA ARGENTINA</title>
+    <meta name="description" content="BORA - Boletín Oficial de la República Argentina">
+
+    <meta property="og:url" content="https://www.boletinoficial.gob.ar/" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Boletín Oficial de la República Argentina" />
+    <meta property="og:description" content="Boletín Oficial de la República Argentina" />
+    <meta property="og:image" content="/static/images/bora_share.jpg" />
+    <meta property="og:locale" content="es_AR" />
+
+    <meta name="twitter:card" content="Boletín Oficial de la República Argentina" />
+    <meta name="twitter:title" content="Boletín Oficial de la República Argentina" />
+    <meta name="twitter:description" content="Boletín Oficial de la República Argentina" />
+    <meta name="twitter:image" content="/static/images/bora_share.jpg" />
+
+    <link rel="shortcut icon" href="/static/favicon.ico">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link href="/static/css/poncho.css" rel='stylesheet' type='text/css'>
+    <link href="/static/css/styles.css" rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.15.0/vis.min.css" type="text/css" />
+    <link href="/static/css/avisos.css" rel='stylesheet' type='text/css'>
+
+    <script type="text/javascript" src="/static/js/share.js"></script>
+    <script type="text/javascript" src="/static/js/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/static/js/moment-with-locales.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.15.0/vis.min.js"></script>
+    <script type="text/javascript" src="/static/js/timeline_sociedades.js"></script>
+</head>
+<body>
+
+    <header>
+        <nav class="navbar navbar-top navbar-default" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="https://www.boletinoficial.gob.ar/">
+                        <img alt="" src="/static/images/bora_logo.svg" height="50">
+                        <h1 class="sr-only">Boletín oficial de la República Argentina</h1>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="modal_loading" class="modal fade bd-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <center>
+                            <span class="fa fa-spinner fa-spin fa-3x"></span>
+                        </center>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6"><h2 style="float:left;">Búsqueda de sociedades</h2></div>
+            </div>
+
+            <div>
+                Esta aplicación permite acceder a la historia  de sociedades comerciales y personas relacionadas con las mismas a través de los avisos publicados por ellas en nuestro Boletín Oficial, mostrándose cada uno a través de una línea de tiempo, pudiéndose además ingresar a su contenido.
+            </div>
+            <br>
+
+            <form method="POST" action="/" class="search_form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group add-on">
+                            <input type="hidden" name="searchtext_type" value="society">
+                            <input type="text" name="searchtext_society" id="searchtext_society" class="input form-control" aria-label="Buscar sociedad" placeholder="por CUIT o denominación de la sociedad" autofocus="false" />
+                            <div class="input-group-btn">
+                                <button type="submit" id="btnHelp" onclick="return false" class="btn btn-info" data-toggle="tooltip" data-placement="left" title="Avisos desde 1970 hasta 2019<br>Nota: se puede utilizar el asterisco (*) para indicar la coincidencia con varios caracteres, por ejemplo, ARGENTIN* permite buscar ARGENTINO, ARGENTINA, ARGENTINOS, ARGENTINAS y ARGENTINE."><i class="fas fa-question"></i></button>
+                                <button type="submit" id="btnSearchSociety" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                <button type="button" id="btnClearSearch" onclick="clearSearch()" class="btn btn-danger"><i class="fas fa-trash-alt"></i></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form method="POST" action="/" class="search_form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group add-on">
+                            <input type="hidden" name="searchtext_type" value="person">
+                            <input type="text" name="searchtext_person" id="searchtext_person" class="input form-control" aria-label="Buscar sociedad" placeholder="por DNI, CUIT o nombre de persona" autofocus="false" />
+                            <div class="input-group-btn">
+                                <button type="submit" id="btnHelp" onclick="return false" class="btn btn-info" data-toggle="tooltip" data-placement="left" title="Avisos desde 2011 hasta 2019<br>Ingrese el DNI o CUIT sin guiones, puntos ni espacios"><i class="fas fa-question"></i></button>
+                                <button type="submit" id="btnSearchPerson" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                <button type="button" id="btnClearSearch" onclick="clearSearch()" class="btn btn-danger"><i class="fas fa-trash-alt"></i></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <form method="POST" action="/" class="search_form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="input-group add-on">
+                            <input type="hidden" name="searchtext_type" value="text">
+                            <input type="text" name="searchtext_text" id="searchtext_text" class="input form-control" aria-label="Buscar sociedad" placeholder="por texto libre" autofocus="false" />
+                            <div class="input-group-btn">
+                                <button type="submit" id="btnHelp" onclick="return false" class="btn btn-info" data-toggle="tooltip" data-placement="left" title="Avisos desde 2011 hasta 2019 "><i class="fas fa-question"></i></button>
+                                <button type="submit" id="btnSearchText" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                <button type="button" id="btnClearSearch" onclick="clearSearch()" class="btn btn-danger"><i class="fas fa-trash-alt"></i></input></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div>
+
+
+
+
+
+                <div id="error_msg" class="alert alert-danger hidden" role="alert">
+
+                </div>
+
+                <div id="societies_buttons">
+                </div>
+                <div>
+                    <form method="POST" action="/" id="frmVerMas" class="hide">
+                        <input type="hidden" name="searchtext_type" value="society">
+                        <input type="hidden" name="searchtext_society" value="ELECTRO MAYO S.R.L.">
+                        <input type="hidden" name="searchtext_person" value="">
+                        <input type="hidden" name="searchtext_text" value="">
+                        <input type="hidden" name="max_length" value="5000">
+                        <button type="submit" id="btnVerMas" class="btn btn-primary">Ver más resultados</button>
+                    </form>
+                </div>
+                <hr>
+                <div id="timelines"></div>
+                <br />
+                <div id="disclaimer">
+                    La visualización de los avisos incluye información extraida y procesada mediante técnicas de inteligencia artificial.<br>
+                    La información provista a través de esta búsqueda es la mejor aproximación posible obtenida sobre datos no estructurados y puede contener errores u omisiones.
+                </div>
+                <br />
+            </div>
+    </main>
+    <br />
+
+    <footer class="main-footer sticky-footer">
+        <div class="container">
+            <hr>
+            <!-- Inferior -->
+            <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-8">
+                            <img alt="Boletín oficial de la República Argentina" src="/static/images/bora_logo.svg">
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-4">
+                            <a href="http://www.redboa.org" onclick="sendExternalLinkEvent(event);" target="_blank"><img class="red-boa form-group" alt="RED BOA" src="/static/images/redboa_logo.png"></a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="datos text-muted small">
+                                <strong>TELÉFONOS:</strong> 5218-8400 - 0810-345-BORA (2672)
+                            </p>
+                            <p class="datos text-muted small">
+                                <strong>SEDE CENTRAL: </strong>Suipacha 767, C.A.B.A. (C1008AAO)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                    <div>
+                        <img class="presidencia" alt="Presidencia de la Nación" src="/static/images/presidencia_logo.svg">
+                        <p class="datos text-muted small">
+                            <span>
+                                Secretaría Legal y Técnica |
+                                <strong>Dra. Vilma Lidia Ibarra - Secretaria</strong>
+                            </span>
+                        </p>
+                        <p class="datos text-muted small">
+                            <span>
+                                Dirección Nacional del Registro Oficial |
+                                <strong>Dra. María Angélica Lobo - Directora</strong>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        const societies = [{ "indice": 1, "items": [{ "avisos": [{ "accion": "CONTRATOS SOBRE PERS.JURIDICAS", "asuntos": [], "denominacion": "ELECTRO MAYO S.R.L.", "denominacion_original": "ELECTRO MAYO S.R.L.", "fecha_desde": "21-10-1991", "fecha_hasta": "21-10-1991", "fecha_publicado": "21-10-1991", "id_aviso": "H1093693", "id_rubro": 1000, "nuevo": true, "rubro": "CONTRATOS SOBRE PERS.JURIDICAS", "tags": { "autoridad_designada": [], "cuit": [], "direccion_sociedad": [], "dni": [], "fecha_constitucion": [], "firmante": [], "integrante": [], "integrante_renunciante": [], "objeto_social": [] } }], "fecha_desde": "21-10-1991", "fecha_hasta": "21-10-1991" }], "razon_social": "ELECTRO MAYO S.R.L.", "tipo": "PERS.JURIDICAS", "total_avisos": 1 }, { "indice": 2, "items": [{ "avisos": [{ "accion": "REFORMA SA", "asuntos": ["REFORMA", "CAMBIO DE JURISDICCION", "SEDE"], "denominacion": "ELECTRO MAYO S.A.", "denominacion_original": "ELECTRO MAYO S.A.", "fecha_desde": "29-01-2015", "fecha_hasta": "29-01-2015", "fecha_publicado": "29-01-2015", "id_aviso": "A434075", "id_rubro": 1120, "nuevo": true, "rubro": "REFORMA SA", "tags": { "autoridad_designada": [], "cuit": [], "direccion_sociedad": [], "dni": [], "fecha_constitucion": [], "firmante": ["analia laura carriles"], "integrante": [], "integrante_renunciante": [], "objeto_social": [] } }], "fecha_desde": "29-01-2015", "fecha_hasta": "29-01-2015" }, { "avisos": [{ "accion": "CONTRATOS SOBRE PERS.JURIDICAS", "asuntos": ["ESTATUTO"], "denominacion": "ELECTRO MAYO S.A.", "denominacion_original": "ELECTRO MAYO S.A.", "fecha_desde": "30-09-1996", "fecha_hasta": "30-09-1996", "fecha_publicado": "30-09-1996", "id_aviso": "H570747", "id_rubro": 1000, "nuevo": true, "rubro": "CONTRATOS SOBRE PERS.JURIDICAS", "tags": { "autoridad_designada": [], "cuit": [], "direccion_sociedad": [], "dni": [], "fecha_constitucion": [], "firmante": [], "integrante": [], "integrante_renunciante": [], "objeto_social": [] } }], "fecha_desde": "30-09-1996", "fecha_hasta": "30-09-1996" }, { "avisos": [{ "accion": "AVISOS COMERCIALES", "asuntos": ["DIRECTORIO/ Designan y/o renuncian"], "denominacion": "ELECTRO MAYO S.A.", "denominacion_original": "ELECTRO MAYO S.A.", "fecha_desde": "18-01-2018", "fecha_hasta": "18-01-2018", "fecha_publicado": "18-01-2018", "id_aviso": "A716903", "id_rubro": 2300, "nuevo": true, "rubro": "AVISOS COMERCIALES", "tags": { "autoridad_designada": ["natalia freifrun", "bernardo b. freibrun"], "cuit": [], "direccion_sociedad": [], "dni": [], "fecha_constitucion": [], "firmante": ["analia laura carriles"], "integrante": ["natalia freifrun", "yita sorger", "nicolas freibrun", "bernardo b. freibrun"], "integrante_renunciante": [], "objeto_social": [] } }], "fecha_desde": "18-01-2018", "fecha_hasta": "18-01-2018" }, { "avisos": [{ "accion": "AVISOS COMERCIALES", "asuntos": [], "denominacion": "ELECTRO MAYO S.A.", "denominacion_original": "ELECTRO MAYO S.A.", "fecha_desde": "23-02-2012", "fecha_hasta": "23-02-2012", "fecha_publicado": "23-02-2012", "id_aviso": "A108372", "id_rubro": 2300, "nuevo": true, "rubro": "AVISOS COMERCIALES", "tags": { "autoridad_designada": ["formalizar la designaci\u00f3n de directores, y por", "bernardo bernab\u00e9 freibrun"], "cuit": [], "direccion_sociedad": [], "dni": [], "fecha_constitucion": [], "firmante": [], "integrante": ["bernardo bernab\u00e9 freibrun", "natalia freibrun"], "integrante_renunciante": [], "objeto_social": [] } }], "fecha_desde": "23-02-2012", "fecha_hasta": "23-02-2012" }], "razon_social": "ELECTRO MAYO S.A.", "tipo": "SA", "total_avisos": 4 }];
+        const bora_avisos_segunda_url = "https://www.boletinoficial.gob.ar/detalleAviso/segunda/";
+        const max_length = "750";
+
+        $(function () {
+            if (societies.length) {
+                makeSocietiesButtons(societies);
+                makeSocietiesPanel(societies);
+                makeReferences(societies);
+                makeSocietiesTimelines(societies);
+
+                if ('society' == 'text' && '5' == '750' && max_length != 5000) {
+                    $('#frmVerMas').removeClass('hide');
+                }
+
+                $('.rubro_filtro').change(function () {
+                    var indice = $(this).closest('div.timeline_panel').find('[name=indice]').val();
+                    setFilters(indice);
+                });
+
+                $('.select_all').click(function () {
+                    $(this).closest('div.referencias').find('.rubro_filtro').prop('checked', true);
+
+                    var indice = $(this).closest('div.timeline_panel').find('[name=indice]').val();
+                    setFilters(indice);
+                });
+
+                $('.unselect_all').click(function () {
+                    $(this).closest('div.referencias').find('.rubro_filtro').prop('checked', false);
+
+                    var indice = $(this).closest('div.timeline_panel').find('[name=indice]').val();
+                    setFilters(indice);
+                });
+            }
+        });
+
+        $(document).ready(function () {
+            setupInputs();
+            $('[data-toggle="tooltip"]').tooltip({ html: true });
+        });
+
+        $('#searchtext_society').on('input', function () {
+            autoCompletarCuit(this);
+        });
+
+        $('#searchtext_society,#searchtext_person,#searchtext_text').keydown(function (e) {
+            if (e.keyCode == 13) {
+                $(this).closest('form').submit();
+            }
+        });
+
+        $('.search_form').on('submit', function () {
+            $('#modal_loading').modal('show');
+        });
+
+        $('body').tooltip({
+            selector: '[data-toggle="tooltip"].aviso_tooltip',
+            trigger: 'click',
+            html: true
+        });
+    </script>
+
+</body>
+</html>

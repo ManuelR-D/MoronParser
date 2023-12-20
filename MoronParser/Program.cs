@@ -14,7 +14,7 @@ namespace MoronParser
         static void Main(string[] args)
         {
             
-            for(int i = 2008; i < 2024; i++)
+            for(int i = 2007; i < 2008; i++)
             {
                 Console.WriteLine("Año: " + i);
                 Uri uri = new Uri("https://apps.moron.gob.ar/ext/rafam_portal/compras/concluidas.php?trimestre=1&orden=A&crit=N&rubro=-1&anio=" + i);
@@ -44,6 +44,8 @@ namespace MoronParser
             OrdenDeCompraHttpQuerier ocQuerier = new OrdenDeCompraHttpQuerier();
             DetalleOrdenDeCompraHttpQuerier detalleOcQuerier = new DetalleOrdenDeCompraHttpQuerier();
             List<CompraConcluida> compras = new List<CompraConcluida>();
+            int totalCount = 0;
+            int fromCache = 0;
             foreach (var tr in trValues)
             {
                 HtmlDocument htmlDocument = new HtmlDocument();
@@ -52,12 +54,22 @@ namespace MoronParser
                     htmlDocument.LoadHtml(tr);
                     try
                     {
+                        totalCount += 1;
                         LineaCompraConcluida cc = parser.Parse(htmlDocument);
 
                         var htmlDocument2 = solicitudQuerier.GetDocument(cc.SolicitudCotizacionUrl);
+                        SolicitudCotizacion cotizacion = parserSolicitud.Parse(htmlDocument2);
+                        string pathToFile = $"C:\\CompraConcluida\\{year}\\{cotizacion.NumeroSolicitudCotizacion}.json";
+
+                        if (File.Exists(pathToFile))
+                        {
+                            fromCache++;
+                            Console.WriteLine(cotizacion.NumeroSolicitudCotizacion + " ya existe");
+                            continue;
+                        }
+
                         var htmlDocument3 = ocQuerier.GetDocument(cc.OrdenDeCompraUrl);
 
-                        SolicitudCotizacion cotizacion = parserSolicitud.Parse(htmlDocument2);
                         List<OrdenDeCompra> ordenDeCompras = new List<OrdenDeCompra>();
                         IList<LineaOrdenDeCompra> oc = parserOC.Parse(htmlDocument3);
                         foreach (var o in oc)
@@ -71,7 +83,6 @@ namespace MoronParser
 
                         CompraConcluida compra = new CompraConcluida(cotizacion, cc.FechaPublicacion, cc.FechaCierre, cc.Estado, cc.TipoDeCompra, ordenDeCompras);
                         string jsonString = JsonConvert.SerializeObject(compra);
-                        string pathToFile = $"C:\\CompraConcluida\\{year}\\{compra.SolicitudCotizacion.NumeroSolicitudCotizacion}.json";
                         File.WriteAllText(pathToFile, jsonString);
                         compras.Add(compra);
                     }
@@ -81,6 +92,8 @@ namespace MoronParser
                     }
                 }
             }
+
+            Console.WriteLine($"Se obtuvo de la cache {fromCache} de {totalCount}");
         }
     }
 }

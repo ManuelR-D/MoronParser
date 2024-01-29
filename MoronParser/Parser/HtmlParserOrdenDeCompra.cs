@@ -42,7 +42,7 @@ namespace MoronParser.Parser
                 long importeOtorgado = long.Parse(tdValues[i+2].Replace(",", "").Replace(".", ""));
                 string uri = Host + aValues[j].Trim().Replace("&amp;","&");
 
-                Console.WriteLine($"{numeroOC}, {fechaOC}, {importeOtorgado}, {uri}");
+                //Console.WriteLine($"{numeroOC}, {fechaOC}, {importeOtorgado}, {uri}");
 
                 compras.Add(new LineaOrdenDeCompra()
                 {

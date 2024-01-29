@@ -24,7 +24,7 @@ namespace MoronParser.Parser
                 int cantidad = int.Parse(tdValues[i+1]);
                 string uom = tdValues[i+2];
                 string descripcion = tdValues[i+3];
-                long precioUnitario = long.Parse(tdValues[i+4].Replace(",",""));
+                long precioUnitario = long.Parse(tdValues[i+4].Replace(",","").Replace(".",""));
                 DetalleOC detalle = new DetalleOC()
                 {
                     UnidadDeMedida = uom,
@@ -34,7 +34,7 @@ namespace MoronParser.Parser
                     Renglon = renglon
                 };
 
-                Console.WriteLine( $"{renglon}, {cantidad}, {uom}, {descripcion}, {precioUnitario}" );
+                //Console.WriteLine( $"{renglon}, {cantidad}, {uom}, {descripcion}, {precioUnitario}" );
 
                 detalleOCs.Add(detalle);
             }

@@ -23,12 +23,27 @@ namespace MoronParser.Querier
 
         public HtmlDocument GetDocument(Uri url)
         {
-            var doc = _querier.GetDocument(url);
-            var divContenido = doc.DocumentNode.Descendants("div")
-                            .FirstOrDefault(d => d.GetAttributeValue("class", "") == "contenido");
-
             var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(divContenido.InnerHtml);
+            int retryCount = 0;
+            bool hasToRetry = true;
+            do
+            {
+                try
+                {
+                    var doc = _querier.GetDocument(url);
+                    var divContenido = doc.DocumentNode.Descendants("div")
+                                    .FirstOrDefault(d => d.GetAttributeValue("class", "") == "contenido");
+                    htmlDocument.LoadHtml(divContenido.InnerHtml);
+                    return htmlDocument;
+                }
+                catch (Exception e)
+                {
+                    retryCount++;
+                    Console.WriteLine($"Error al obtener {url}. Reintento {retryCount}.");
+                    Thread.Sleep(1000);
+                }
+                hasToRetry = retryCount < 3;
+            } while (hasToRetry);
             return htmlDocument;
         }
     }

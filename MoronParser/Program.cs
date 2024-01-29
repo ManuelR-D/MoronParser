@@ -4,96 +4,54 @@ using MoronParser.Parser;
 using MoronParser.Parser.Extension;
 using MoronParser.Querier;
 using Newtonsoft.Json;
+using System.Formats.Asn1;
+using System;
 using System.Reflection.Metadata;
 using System.Text.Json;
+using CsvHelper;
+using System.Globalization;
+using System.Xml.Schema;
 
 namespace MoronParser
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
-            
-            for(int i = 2007; i < 2008; i++)
+            IList<CompraConcluida> compras = new List<CompraConcluida>();
+            for (int i = 2007; i < 2024; i++)
             {
-                Console.WriteLine("Año: " + i);
-                Uri uri = new Uri("https://apps.moron.gob.ar/ext/rafam_portal/compras/concluidas.php?trimestre=1&orden=A&crit=N&rubro=-1&anio=" + i);
-
-                WriteYear(uri, i);
+                ReadFromFS(compras, i);
             }
+
+            // Write compras to a single .json file
+            string jsonString = JsonConvert.SerializeObject(compras);
+            File.WriteAllText("C:\\CompraConcluida\\compras.json", jsonString);
+
+            return 0;
         }
 
-        static void WriteYear(Uri uri, int year)
+        private static void ReadFromFS(IList<CompraConcluida> compras, int i)
         {
-            HtmlWeb htmlWeb = new HtmlWeb();
-            var doc = htmlWeb.Load(uri);
-            var node = doc.GetElementbyId("lasClases");
-            var doc2 = new HtmlDocument();
-            doc2.LoadHtml(node.InnerHtml);
-            Directory.CreateDirectory($"C:\\CompraConcluida\\{year}");
-
-            var trValues = doc2.DocumentNode.Descendants("tr")
-                .Select(td => td.InnerHtml)
-                .ToList();
-
-            HtmlParserCompraConcluida parser = new HtmlParserCompraConcluida();
-            HtmlParserSolicitudCotizacion parserSolicitud = new HtmlParserSolicitudCotizacion();
-            HtmlParserOrdenDeCompra parserOC = new HtmlParserOrdenDeCompra();
-            HtmlParserDetalleOrdenDeCompra parserDOC = new HtmlParserDetalleOrdenDeCompra();
-            SolicitudCotizacionHttpQuerier solicitudQuerier = new SolicitudCotizacionHttpQuerier();
-            OrdenDeCompraHttpQuerier ocQuerier = new OrdenDeCompraHttpQuerier();
-            DetalleOrdenDeCompraHttpQuerier detalleOcQuerier = new DetalleOrdenDeCompraHttpQuerier();
-            List<CompraConcluida> compras = new List<CompraConcluida>();
-            int totalCount = 0;
-            int fromCache = 0;
-            foreach (var tr in trValues)
+            if (Directory.Exists($"C:\\CompraConcluida\\{i}"))
             {
-                HtmlDocument htmlDocument = new HtmlDocument();
-                if (tr != null)
+                string[] files = Directory.GetFiles($"C:\\CompraConcluida\\{i}");
+                foreach (string file in files)
                 {
-                    htmlDocument.LoadHtml(tr);
-                    try
+                    var contents = File.ReadAllText(file, System.Text.Encoding.UTF8);
+                    CompraConcluida? compra = JsonConvert.DeserializeObject<CompraConcluida>(contents);
+                    if (compra != null)
                     {
-                        totalCount += 1;
-                        LineaCompraConcluida cc = parser.Parse(htmlDocument);
-
-                        var htmlDocument2 = solicitudQuerier.GetDocument(cc.SolicitudCotizacionUrl);
-                        SolicitudCotizacion cotizacion = parserSolicitud.Parse(htmlDocument2);
-                        string pathToFile = $"C:\\CompraConcluida\\{year}\\{cotizacion.NumeroSolicitudCotizacion}.json";
-
-                        if (File.Exists(pathToFile))
-                        {
-                            fromCache++;
-                            Console.WriteLine(cotizacion.NumeroSolicitudCotizacion + " ya existe");
-                            continue;
-                        }
-
-                        var htmlDocument3 = ocQuerier.GetDocument(cc.OrdenDeCompraUrl);
-
-                        List<OrdenDeCompra> ordenDeCompras = new List<OrdenDeCompra>();
-                        IList<LineaOrdenDeCompra> oc = parserOC.Parse(htmlDocument3);
-                        foreach (var o in oc)
-                        {
-                            var htmlDocument4 = detalleOcQuerier.GetDocument(o.DetalleOrdenDeCompraUrl);
-
-                            IList<DetalleOC> dOC = parserDOC.Parse(htmlDocument4);
-                            OrdenDeCompra res = new OrdenDeCompra(o.NumeroOrdenDeCompra, o.FechaOrdenDeCompra, o.ImporteOrdenDeCompra, o.Empresa, dOC);
-                            ordenDeCompras.Add(res);
-                        }
-
-                        CompraConcluida compra = new CompraConcluida(cotizacion, cc.FechaPublicacion, cc.FechaCierre, cc.Estado, cc.TipoDeCompra, ordenDeCompras);
-                        string jsonString = JsonConvert.SerializeObject(compra);
-                        File.WriteAllText(pathToFile, jsonString);
                         compras.Add(compra);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        continue;
+                        Console.WriteLine("Error al deserializar: " + file);
                     }
                 }
             }
-
-            Console.WriteLine($"Se obtuvo de la cache {fromCache} de {totalCount}");
         }
+
+        // Rest of the code...
     }
 }

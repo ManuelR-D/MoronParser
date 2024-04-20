@@ -10,6 +10,8 @@ namespace CEOParser
 {
     internal class Program
     {
+        private static string TARGET_FOLDER = "C:\\Empresas\\CUIT";
+        private static string COMPRAS_FOLDER = "C:\\CompraConcluida";
         static void Main(string[] args)
         {
             List<CompraConcluida> compras = new List<CompraConcluida>();
@@ -17,9 +19,9 @@ namespace CEOParser
             {
                 Converters = { new DateOnlyJsonConverter("yyyy-MM-dd") }
             };
-            for (int i = 2007; i < 2024; i++)
+            for (int i = 2007; i < 2008; i++)
             {
-                string[] filenames = Directory.GetFiles($"C:\\CompraConcluida\\CompraConcluida\\{i}");
+                string[] filenames = Directory.GetFiles($"{COMPRAS_FOLDER}\\{i}");
 
                 foreach (string filename in filenames)
                 {
@@ -38,13 +40,11 @@ namespace CEOParser
 
 
 
-            HashSet<string> razonesSociales = new HashSet<string>();
             HashSet<string> cuits = new HashSet<string>();
             foreach (CompraConcluida c  in compras)
             {
                 foreach (OrdenDeCompra o in c.OrdenesDeCompra)
                 {
-                    razonesSociales.Add(o.Empresa.RazonSocial);
                     cuits.Add(o.Empresa.Cuit);
                 }
             }
@@ -55,7 +55,7 @@ namespace CEOParser
             foreach (string cuit in cuits)
             {
                 totalCount++;
-                string path = $"C:\\Empresas\\CUIT\\{cuit.Replace('\\', ' ').Replace('/',' ')}.json";
+                string path = $"{TARGET_FOLDER}\\{cuit.Replace('\\', ' ').Replace('/',' ')}.json";
                 if (File.Exists(path))
                 {
                     fromCache++;

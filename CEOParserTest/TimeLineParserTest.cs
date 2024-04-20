@@ -1,15 +1,13 @@
 using CEOParser.Parser;
 using CEOParser.Model;
 using HtmlAgilityPack;
-using System.Linq;
-
 namespace CEOParserTest
 {
     [TestClass]
-    public class UnitTest1
+    public class TimeLineParserTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void ParseTimeline()
         {
             int expectedCount1 = 1;
             int expectedCount2 = 4;

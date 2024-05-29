@@ -9,12 +9,14 @@ namespace MoronParser
 {
     internal class Program
     {
+        private static int FROM_YEAR = 2007;
+        private static int TO_YEAR = 2023;
         private static string TARGET_FOLDER = "C:\\CompraConcluida";
         private static string HOST = "https://apps.moron.gob.ar/ext/rafam_portal/compras/concluidas.php?trimestre=1&orden=A&crit=N&rubro=-1&anio=";
         static void Main(string[] args)
         {
 
-            for (int i = 2007; i < 2008; i++)
+            for (int i = FROM_YEAR; i < TO_YEAR; i++)
             {
                 Console.WriteLine("Año: " + i);
                 Uri uri = new Uri(HOST + i);

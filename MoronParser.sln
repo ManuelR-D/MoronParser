@@ -7,9 +7,20 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoronParser", "MoronParser\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MoronParserTest", "MoronParserTest\MoronParserTest.csproj", "{64D437F8-D286-4CD6-81A5-2C5E96418916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEOParser", "CEOParser\CEOParser.csproj", "{10E9D38B-5A51-4AB9-A787-E412F07DEA70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEOParser", "CEOParser\CEOParser.csproj", "{10E9D38B-5A51-4AB9-A787-E412F07DEA70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CEOParserTest", "CEOParserTest\CEOParserTest.csproj", "{AD5D79B7-B36D-4076-A21F-88D55C6307D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CEOParserTest", "CEOParserTest\CEOParserTest.csproj", "{AD5D79B7-B36D-4076-A21F-88D55C6307D6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7ECABBC1-24BF-44D9-BCDA-0B6453270F96}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CEOLLMParser", "CEOLLMParser", "{7FF689B9-18F4-405A-BA85-39223904D40F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\..\..\llm\input_with_bora.csv = ..\..\..\..\..\..\llm\input_with_bora.csv
+		..\..\..\..\..\..\llm\generateCeoTimeline.py = ..\..\..\..\..\..\llm\generateCeoTimeline.py
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

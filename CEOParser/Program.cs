@@ -14,6 +14,7 @@ namespace CEOParser
         private static string COMPRAS_FOLDER = "C:\\CompraConcluida";
         static void Main(string[] args)
         {
+            Directory.CreateDirectory($"{TARGET_FOLDER}");
             List<CompraConcluida> compras = new List<CompraConcluida>();
             var jsonSerializerOptions = new JsonSerializerOptions
             {

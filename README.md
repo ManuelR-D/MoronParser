@@ -52,16 +52,13 @@ Python 3.9, ctransformers y bs4. Se puede instalar Python desde la [página ofic
 # Ejecución
 
 ## MoronParser
-Abrir un terminal en  `./MoronParser` y ejecutar  
-`dotnet run --project .\MoronParser.csproj`
+Abrir un terminal en  `./MoronParser` y ejecutar `dotnet run --project .\MoronParser.csproj`
 
 ## CEOParser
-Abrir un terminal en `./CEOParser` y ejecutar
-`dotnet run --project .\CEOParser.csproj`
+Abrir un terminal en `./CEOParser` y ejecutar `dotnet run --project .\CEOParser.csproj`
 
 ## CEOLLMParser
-Abrir un terminal en `./CEOLLMParser` y ejecutar
-`python generateCeoTimeline.py`
+Abrir un terminal en `./CEOLLMParser` y ejecutar `python generateCeoTimeline.py`
 
 # Configuración
 En el archivo `./MoronParser/Program.cs` se pueden modificar las variables
